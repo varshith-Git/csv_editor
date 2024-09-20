@@ -35,8 +35,11 @@ if st.session_state.login_successful:
             # Read the uploaded CSV file
             df = pd.read_csv(uploaded_file)
 
-            # Display the original dataframe
-            st.subheader("Original Data")
+            # Automatically replace periods in column names with underscores
+            df.columns = [col.replace('.', '_') for col in df.columns]
+
+            # Display the original dataframe with corrected column names
+            st.subheader("Data with Corrected Column Names")
             st.write(df)
 
             # Make dynamic changes
