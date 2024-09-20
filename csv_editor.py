@@ -7,13 +7,22 @@ st.title("Dynamic CSV Editor")
 # Password protection
 password = st.text_input("Enter the password to access the file upload:", type="password")
 
-# Password to access the app
+# Correct password to access the app
 required_password = "nttdata"
+
+# Initialize session state to manage successful login
+if "login_successful" not in st.session_state:
+    st.session_state.login_successful = False
 
 # Check if the correct password is entered
 if password == required_password:
-    st.success("Password accepted. You can now upload a CSV file.")
+    st.session_state.login_successful = True
+    st.success("Login successful! You can now upload a CSV file.")
+elif password:
+    st.error("Incorrect password. Please try again.")
 
+# Show the file upload section only if the login is successful
+if st.session_state.login_successful:
     # File upload section
     uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
 
@@ -75,18 +84,4 @@ if password == required_password:
                 df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
                 # Apply selected date format
                 df[date_col] = df[date_col].dt.strftime(date_formats[selected_format])
-                st.success(f"Date format for '{date_col}' changed to {selected_format}.")
-            except Exception as e:
-                st.error(f"Error changing date format: {e}")
-
-            st.write(df)
-
-        # Download the modified dataframe as a CSV without index
-        st.download_button(
-            label="Download Modified CSV",
-            data=df.to_csv(index=False).encode('utf-8'),
-            file_name="modified_data.csv",
-            mime="text/csv"
-        )
-else:
-    st.error("Please enter the correct password to access the file upload.")
+       
