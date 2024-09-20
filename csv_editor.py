@@ -32,19 +32,31 @@ if st.session_state.login_successful:
         for uploaded_file in uploaded_files:
             st.write(f"### File: {uploaded_file.name}")
 
+            # Read the file content to check if it's empty
+            try:
+                content = uploaded_file.read()
+                if not content:
+                    st.error(f"The file '{uploaded_file.name}' is empty. Please upload a non-empty CSV file.")
+                    continue
+            except Exception as e:
+                st.error(f"Error reading the file '{uploaded_file.name}': {e}")
+                continue
+
             # Attempt to read the uploaded CSV file with various encodings
             df = None
             encodings = ['utf-8', 'latin1', 'ISO-8859-1']
             for encoding in encodings:
                 try:
+                    # Reset the file pointer to the beginning
+                    uploaded_file.seek(0)
                     df = pd.read_csv(uploaded_file, encoding=encoding)
                     break  # If successful, break out of the loop
-                except UnicodeDecodeError:
+                except (UnicodeDecodeError, pd.errors.EmptyDataError):
                     continue  # Try the next encoding
 
             # Check if the dataframe was successfully read
             if df is None:
-                st.error(f"Failed to read the file: {uploaded_file.name} due to encoding issues.")
+                st.error(f"Failed to read the file: {uploaded_file.name}. The file might be empty or improperly formatted.")
                 continue
 
             # Automatically replace periods in column names with underscores
