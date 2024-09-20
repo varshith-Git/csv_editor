@@ -84,4 +84,16 @@ if st.session_state.login_successful:
                 df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
                 # Apply selected date format
                 df[date_col] = df[date_col].dt.strftime(date_formats[selected_format])
-       
+                st.success(f"Date format for '{date_col}' changed to {selected_format}.")
+            except Exception as e:
+                st.error(f"Error changing date format: {e}")
+
+            st.write(df)
+
+        # Download the modified dataframe as a CSV without index
+        st.download_button(
+            label="Download Modified CSV",
+            data=df.to_csv(index=False).encode('utf-8'),
+            file_name="modified_data.csv",
+            mime="text/csv"
+        )
