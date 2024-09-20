@@ -4,9 +4,6 @@ import pandas as pd
 # Title of the app
 st.title("Dynamic CSV Editor")
 
-# Password protection
-password = st.text_input("Enter the password to access the file upload:", type="password")
-
 # Correct password to access the app
 required_password = "nttdata"
 
@@ -14,12 +11,17 @@ required_password = "nttdata"
 if "login_successful" not in st.session_state:
     st.session_state.login_successful = False
 
-# Check if the correct password is entered
-if password == required_password:
-    st.session_state.login_successful = True
-    st.success("Login successful! You can now upload a CSV file.")
-elif password:
-    st.error("Incorrect password. Please try again.")
+# Display the password input section only if not logged in
+if not st.session_state.login_successful:
+    # Password input field
+    password = st.text_input("Enter the password to access the file upload:", type="password")
+
+    # Check if the correct password is entered
+    if password == required_password:
+        st.session_state.login_successful = True
+        st.success("Login successful! You can now upload a CSV file.")
+    elif password:
+        st.error("Incorrect password. Please try again.")
 
 # Show the file upload section only if the login is successful
 if st.session_state.login_successful:
