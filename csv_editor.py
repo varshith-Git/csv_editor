@@ -53,6 +53,7 @@ if uploaded_file is not None:
         "Day Month Year (20 Sep 2024)": "%d %b %Y",
         "Full Date (September 20, 2024)": "%B %d, %Y",
         "Day-Month-Year Hour:Minute (20-09-2024 14:30)": "%d-%m-%Y %H:%M",
+        "Year-Month-Day Hour:Minute:Second (2024-09-20 14:30:00)": "%Y-%m-%d %H:%M:%S"
     }
 
     selected_format = st.selectbox("Select date format:", list(date_formats.keys()))
