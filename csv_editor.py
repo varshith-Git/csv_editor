@@ -32,8 +32,20 @@ if st.session_state.login_successful:
         for uploaded_file in uploaded_files:
             st.write(f"### File: {uploaded_file.name}")
 
-            # Read the uploaded CSV file
-            df = pd.read_csv(uploaded_file)
+            # Attempt to read the uploaded CSV file with various encodings
+            df = None
+            encodings = ['utf-8', 'latin1', 'ISO-8859-1']
+            for encoding in encodings:
+                try:
+                    df = pd.read_csv(uploaded_file, encoding=encoding)
+                    break  # If successful, break out of the loop
+                except UnicodeDecodeError:
+                    continue  # Try the next encoding
+
+            # Check if the dataframe was successfully read
+            if df is None:
+                st.error(f"Failed to read the file: {uploaded_file.name} due to encoding issues.")
+                continue
 
             # Automatically replace periods in column names with underscores
             df.columns = [col.replace('.', '_') for col in df.columns]
