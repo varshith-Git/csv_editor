@@ -44,20 +44,32 @@ if uploaded_file is not None:
     # Date format change section
     st.write("### Change Date Format")
     date_col = st.selectbox("Select column to change date format:", df.select_dtypes(include=['datetime', 'object']).columns)
-    date_format = st.text_input("Enter new date format (e.g., %Y-%m-%d, %d/%m/%Y):")
-    
+
+    # Predefined date format options
+    date_formats = {
+        "Year-Month-Day (2024-09-20)": "%Y-%m-%d",
+        "Day/Month/Year (20/09/2024)": "%d/%m/%Y",
+        "Month-Day-Year (09-20-2024)": "%m-%d-%Y",
+        "Day Month Year (20 Sep 2024)": "%d %b %Y",
+        "Full Date (September 20, 2024)": "%B %d, %Y",
+        "Day-Month-Year Hour:Minute (20-09-2024 14:30)": "%d-%m-%Y %H:%M",
+    }
+
+    selected_format = st.selectbox("Select date format:", list(date_formats.keys()))
+
     if st.button("Change Date Format"):
         try:
-            # Convert selected column to datetime if not already
+            # Convert selected column to datetime
             df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
-            df[date_col] = df[date_col].dt.strftime(date_format)
-            st.success(f"Date format for '{date_col}' changed successfully.")
+            # Apply selected date format
+            df[date_col] = df[date_col].dt.strftime(date_formats[selected_format])
+            st.success(f"Date format for '{date_col}' changed to {selected_format}.")
         except Exception as e:
             st.error(f"Error changing date format: {e}")
 
         st.write(df)
 
-    # Download the modified dataframe as a CSV
+    # Download the modified dataframe as a CSV without index
     st.download_button(
         label="Download Modified CSV",
         data=df.to_csv(index=False).encode('utf-8'),
