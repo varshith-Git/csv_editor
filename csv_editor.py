@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime
 
 # Title of the app
-st.title("Dynamic CSV Editor")
+st.title("CSV Column Name Cleaner")
 
 # Correct password to access the app
 required_password = "nttdata"
@@ -29,6 +30,9 @@ if st.session_state.login_successful:
     uploaded_files = st.file_uploader("Upload CSV files", type="csv", accept_multiple_files=True)
 
     if uploaded_files:
+        # Get today's date in the desired format (YYYYMMDD)
+        today_date = datetime.now().strftime("%Y%m%d")
+
         for uploaded_file in uploaded_files:
             st.write(f"### File: {uploaded_file.name}")
 
@@ -62,70 +66,20 @@ if st.session_state.login_successful:
             # Automatically replace periods in column names with underscores
             df.columns = [col.replace('.', '_') for col in df.columns]
 
-            # Display the original dataframe with corrected column names
+            # Display the corrected dataframe
             st.subheader("Data with Corrected Column Names")
             st.write(df)
 
-            # Make dynamic changes
-            st.subheader("Modify Data")
+            # Extract the base name of the file without extension
+            base_name = uploaded_file.name.rsplit('.', 1)[0]
 
-            # Column renaming section
-            st.write("### Edit Column Names")
-            new_col_names = {}
-            for col in df.columns:
-                new_col_names[col] = st.text_input(f"Rename column '{col}' in {uploaded_file.name}:", value=col)
-
-            # Apply new column names
-            if st.button(f"Update Column Names in {uploaded_file.name}"):
-                df.rename(columns=new_col_names, inplace=True)
-                st.success("Column names updated successfully.")
-                st.write(df)
-
-            # Value replacement section
-            st.write("### Replace Values in Columns")
-            col_options = st.selectbox(f"Select column to update values in {uploaded_file.name}:", df.columns)
-            value_to_change = st.text_input(f"Value to replace in {col_options} of {uploaded_file.name}:")
-            new_value = st.text_input(f"New value for {col_options} of {uploaded_file.name}:")
-
-            if st.button(f"Update Values in {uploaded_file.name}"):
-                df[col_options] = df[col_options].replace(value_to_change, new_value)
-                st.success("Values updated successfully.")
-                st.write(df)
-
-            # Date format change section
-            st.write("### Change Date Format")
-            date_col = st.selectbox(
-                f"Select column to change date format in {uploaded_file.name}:", df.select_dtypes(include=['datetime', 'object']).columns)
-
-            # Predefined date format options
-            date_formats = {
-                "Year-Month-Day (2024-09-20)": "%Y-%m-%d",
-                "Day/Month/Year (20/09/2024)": "%d/%m/%Y",
-                "Month-Day-Year (09-20-2024)": "%m-%d-%Y",
-                "Day Month Year (20 Sep 2024)": "%d %b %Y",
-                "Full Date (September 20, 2024)": "%B %d, %Y",
-                "Day-Month-Year Hour:Minute (20-09-2024 14:30)": "%d-%m-%Y %H:%M",
-                "Year-Month-Day Hour:Minute:Second (2024-09-20 14:30:00)": "%Y-%m-%d %H:%M:%S"
-            }
-
-            selected_format = st.selectbox(f"Select date format for {date_col} in {uploaded_file.name}:", list(date_formats.keys()))
-
-            if st.button(f"Change Date Format in {uploaded_file.name}"):
-                try:
-                    # Convert selected column to datetime
-                    df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
-                    # Apply selected date format
-                    df[date_col] = df[date_col].dt.strftime(date_formats[selected_format])
-                    st.success(f"Date format for '{date_col}' in {uploaded_file.name} changed to {selected_format}.")
-                except Exception as e:
-                    st.error(f"Error changing date format: {e}")
-
-                st.write(df)
+            # Create the new file name with today's date appended
+            modified_file_name = f"{base_name}_{today_date}.csv"
 
             # Download the modified dataframe as a CSV without index
             st.download_button(
                 label=f"Download Modified CSV for {uploaded_file.name}",
                 data=df.to_csv(index=False).encode('utf-8'),
-                file_name=f"modified_{uploaded_file.name}",
+                file_name=modified_file_name,
                 mime="text/csv"
             )
