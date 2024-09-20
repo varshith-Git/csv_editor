@@ -34,7 +34,7 @@ if st.session_state.login_successful:
         'asmt_metric_result.csv': {
             'sys_created_on': '%Y-%m-%d %H:%M:%S',
             'sys_updated_on': '%Y-%m-%d %H:%M:%S',
-            'instance.sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'instance_sys_created_on': '%Y-%m-%d %H:%M:%S',
         },
         'awa_interaction_work_item.csv': {
             'doc_assigned_at': '%Y-%m-%d %H:%M:%S',
@@ -62,7 +62,7 @@ if st.session_state.login_successful:
             'task.opened_at': '%Y-%m-%d %H:%M:%S',
             'sys_created_on': '%Y-%m-%d %H:%M:%S',
             'sys_updated_on': '%Y-%m-%d %H:%M:%S',
-            'interaction.opened_at': '%Y-%m-%d %H:%M:%S',
+            'interaction_opened_at': '%Y-%m-%d %H:%M:%S',
         },
         'incident.csv': {
             'u_sla_50_timestamp': '%Y-%m-%d %H:%M:%S',
@@ -80,14 +80,14 @@ if st.session_state.login_successful:
             'closed_at': '%Y-%m-%d %H:%M:%S',
         },
         'u_group_reassignment_logs.csv': {
-            'u_task.closed_at': '%Y-%m-%d %H:%M:%S',
-            'u_task.sys_updated_on': '%Y-%m-%d %H:%M:%S',
+            'u_task_closed_at': '%Y-%m-%d %H:%M:%S',
+            'u_task_sys_updated_on': '%Y-%m-%d %H:%M:%S',
         },
         'm2m_kbtask.csv': {
-            'task.closed_at': '%Y-%m-%d %H:%M:%S',
-            'task.sys_created_on': '%Y-%m-%d %H:%M:%S',
-            'task.sys_updated_on': '%Y-%m-%d %H:%M:%S',
-            'task.opened_at': '%Y-%m-%d %H:%M:%S',
+            'task_closed_at': '%Y-%m-%d %H:%M:%S',
+            'task_sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'task_sys_updated_on': '%Y-%m-%d %H:%M:%S',
+            'task_opened_at': '%Y-%m-%d %H:%M:%S',
             'sys_created_on': '%Y-%m-%d %H:%M:%S',
         },
         'kb_Knowledge.csv': {
