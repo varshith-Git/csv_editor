@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 
 # Title of the app
-st.title("CSV Column Name Cleaner")
+st.title("CSV Column Name Cleaner and Date Formatter")
 
 # Correct password to access the app
 required_password = "nttdata"
@@ -28,6 +28,79 @@ if not st.session_state.login_successful:
 if st.session_state.login_successful:
     # File upload section with support for multiple files
     uploaded_files = st.file_uploader("Upload CSV files", type="csv", accept_multiple_files=True)
+
+    # Define date format rules for specific files and columns
+    date_format_rules = {
+        'asmt_metric_result.csv': {
+            'sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'sys_updated_on': '%Y-%m-%d %H:%M:%S',
+            'instance.sys_created_on': '%Y-%m-%d %H:%M:%S',
+        },
+        'awa_interaction_work_item.csv': {
+            'doc_assigned_at': '%Y-%m-%d %H:%M:%S',
+            'doc_closed_at': '%Y-%m-%d %H:%M:%S',
+            'doc_sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'wi_sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'doc_live_handoff_time': '%Y-%m-%d %H:%M:%S',
+            'wi_offered_on': '%Y-%m-%d %H:%M:%S',
+            'doc_opened_at': '%Y-%m-%d %H:%M:%S',
+            'doc_state_changed_on': '%Y-%m-%d %H:%M:%S',
+            'doc_sys_updated_on': '%Y-%m-%d %H:%M:%S',
+            'wi_sys_updated_on': '%Y-%m-%d %H:%M:%S',
+            'wi_state_changed_on': '%Y-%m-%d %H:%M:%S',
+        },
+        'interaction.csv': {
+            'closed_at': '%Y-%m-%d %H:%M:%S',
+            'assigned_at': '%Y-%m-%d %H:%M:%S',
+            'sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'live_handoff_time': '%Y-%m-%d %H:%M:%S',
+            'opened_at': '%Y-%m-%d %H:%M:%S',
+            'state_changed_on': '%Y-%m-%d %H:%M:%S',
+            'sys_updated_on': '%Y-%m-%d %H:%M:%S',
+        },
+        'interaction_related_record.csv': {
+            'task.opened_at': '%Y-%m-%d %H:%M:%S',
+            'sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'sys_updated_on': '%Y-%m-%d %H:%M:%S',
+            'interaction.opened_at': '%Y-%m-%d %H:%M:%S',
+        },
+        'incident.csv': {
+            'u_sla_50_timestamp': '%Y-%m-%d %H:%M:%S',
+            'proposed_on': '%Y-%m-%d %H:%M:%S',
+            'promoted_on': '%Y-%m-%d %H:%M:%S',
+            'u_ntt_sla_calculation': '%Y-%m-%d %H:%M:%S',
+            'u_mi_accepted_rejected_time': '%Y-%m-%d %H:%M:%S',
+            'reopened_time': '%Y-%m-%d %H:%M:%S',
+            'u_impact_start_end_entered': '%Y-%m-%d %H:%M:%S',
+            'u_impact_end': '%Y-%m-%d %H:%M:%S',
+            'opened_at': '%Y-%m-%d %H:%M:%S',
+            'sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'sys_updated_on': '%Y-%m-%d %H:%M:%S',
+            'resolved_at': '%Y-%m-%d %H:%M:%S',
+            'closed_at': '%Y-%m-%d %H:%M:%S',
+        },
+        'u_group_reassignment_logs.csv': {
+            'u_task.closed_at': '%Y-%m-%d %H:%M:%S',
+            'u_task.sys_updated_on': '%Y-%m-%d %H:%M:%S',
+        },
+        'm2m_kbtask.csv': {
+            'task.closed_at': '%Y-%m-%d %H:%M:%S',
+            'task.sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'task.sys_updated_on': '%Y-%m-%d %H:%M:%S',
+            'task.opened_at': '%Y-%m-%d %H:%M:%S',
+            'sys_created_on': '%Y-%m-%d %H:%M:%S',
+        },
+        'kb_Knowledge.csv': {
+            'sys_created_on': '%Y-%m-%d %H:%M:%S',
+            'sys_updated_on': '%Y-%m-%d %H:%M:%S',
+        },
+        'sla_breakdown_by_assignment.csv': {
+            'end': '%Y-%m-%d %H:%M:%S',
+        },
+        'incident_sla.csv': {
+            'taskslatable_end_time': '%Y-%m-%d %H:%M:%S',
+        }
+    }
 
     if uploaded_files:
         # Get today's date in the desired format (YYYYMMDD)
@@ -66,8 +139,18 @@ if st.session_state.login_successful:
             # Automatically replace periods in column names with underscores
             df.columns = [col.replace('.', '_') for col in df.columns]
 
+            # Apply date format rules if applicable
+            file_name = uploaded_file.name
+            if file_name in date_format_rules:
+                rules = date_format_rules[file_name]
+                for col, desired_format in rules.items():
+                    if col in df.columns:
+                        # Allow user to apply the specified date format
+                        st.write(f"Applying date format '{desired_format}' to column '{col}'")
+                        df[col] = pd.to_datetime(df[col], errors='coerce').dt.strftime(desired_format)
+
             # Display the corrected dataframe
-            st.subheader("Data with Corrected Column Names")
+            st.subheader("Data with Corrected Column Names and Formats")
             st.write(df)
 
             # Extract the base name of the file without extension
