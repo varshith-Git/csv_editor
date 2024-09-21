@@ -5,6 +5,15 @@ from datetime import datetime
 # Title of the app
 st.title("CSV Column Name Cleaner and Date Formatter")
 
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # Correct password to access the app
 required_password = "nttdata"
 
