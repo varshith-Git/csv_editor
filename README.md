@@ -40,21 +40,13 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 This project is licensed under the Apache License. See the LICENSE file for more information.
 
 ## Author
-### Gudur Varshith
-GitHub: @varshith-Git
-LinkedIn: https://www.linkedin.com/in/varshithg17/
 
-Feel free to connect or reach out for collaboration!
+**Gudur Varshith**  
+Data Engineer with expertise in data modeling, ingestion, and migration. Passionate about building innovative data solutions.
+
+- GitHub: [@varshith-Git](https://github.com/varshith-Git)
+- LinkedIn: [Gudur Varshith](https://www.linkedin.com/in/varshithg17/)
+- Email: [G-mail](mailto:gudur.varshith17@gmail.com)
 
 ## Acknowledgements
 Thanks to the Streamlit community and contributors for providing the tools to make this project possible.
-
-   ```bash
-   Feel free to modify or add additional details specific to your project. Let me know if you need any changes!
-
-
-
-
-
-
-
